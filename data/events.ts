@@ -85,7 +85,7 @@ export const events: DharmaEvent[] = [
     summary: '口傳僅限實體參與方能獲得傳承，不開放線上。08:30 開始報到。',
     start: '2026-11-07',
     time: '09:30–16:30',
-    venue: '台北松山區',
+    venue: '傳澄慈善協會',
     address: '台北市松山區南京東路五段 34 號 11 樓',
     region: '台北・新北',
     contact: '張師姊 0939-083-738',
