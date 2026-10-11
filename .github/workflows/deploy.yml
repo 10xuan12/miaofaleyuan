@@ -1,0 +1,52 @@
+# 每次 push 到 main，自動 build 並部署到 GitHub Pages。
+# 第一次使用：repo 的 Settings → Pages → Source 選「GitHub Actions」。
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # 也可以在 Actions 頁面手動觸發
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # 網站的根路徑：
+      # - 還沒綁網域時，網址是 https://帳號.github.io/repo名稱/ ，所以根路徑是 /repo名稱/
+      # - 綁好 www.miaofaleyuan.org.tw 之後，到 Settings → Secrets and variables → Actions → Variables
+      #   新增變數 BASE_URL，值填 /  （只要一個斜線）
+      - run: npm run generate
+        env:
+          NUXT_APP_BASE_URL: ${{ vars.BASE_URL || format('/{0}/', github.event.repository.name) }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .output/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
