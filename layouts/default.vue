@@ -27,8 +27,8 @@ watch(() => route.fullPath, () => (menuOpen.value = false))
       <div class="wrap announce__inner">
         <span class="announce__label">近期法會</span>
         <span class="announce__list">
-          <span v-for="(e, i) in banner" :key="e.id">
-            {{ e.shortDate }} {{ e.title }}<span v-if="i < banner.length - 1">　・　</span>
+          <span v-for="(e, i) in banner" :key="e.id" class="announce__item">
+            {{ e.shortDate }} {{ e.title }}<span v-if="i < banner.length - 1" class="announce__sep">　・　</span>
           </span>
         </span>
         <NuxtLink to="/events" class="announce__more">看全部</NuxtLink>
@@ -139,6 +139,13 @@ watch(() => route.fullPath, () => (menuOpen.value = false))
 }
 .announce__more {
   color: var(--on-maroon);
+}
+/* 手機版公告列只顯示最近 1 場 */
+@media (max-width: 640px) {
+  .announce__item:not(:first-child),
+  .announce__sep {
+    display: none;
+  }
 }
 
 .header {
